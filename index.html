@@ -1,12 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Dipodomys: Metabolic Water Lab</title>
+    <style>
+        body {
+            background-color: #121824;
+            color: #e2e8f0;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .lab-panel {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        h2 {
+            color: #38bdf8;
+            margin-top: 0;
+            font-size: 24px;
+        }
+        p {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .status-display {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 15px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .status-normal { color: #38bdf8; }
+        .status-error { color: #f87171; }
+        .status-success { color: #4ade80; border-color: #22c55e; background: #064e3b; font-size: 18px; font-weight: bold; }
+        
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        .lab-btn {
+            background: #334155;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            padding: 15px 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .lab-btn:hover { background: #475569; }
+    </style>
+</head>
+<body>
+
+<div class="lab-panel">
+    <h2>PROJECT DIPODOMYS</h2>
+    <p><strong>Subject:</strong> Kangaroo Rat Metabolic Isolation Chamber<br>
+    <strong>Objective:</strong> Synthesize 100% of required survival water entirely from dry matter. Activate the biological systems in the precise logical order.</p>
+    
+    <div id="display" class="status-display status-normal">SYSTEM INITIALIZED: AWAITING INPUT</div>
+    
+    <div class="button-grid">
+        <button class="lab-btn" onclick="pressButton('CONSERVE')">MAXIMIZE NEPHRON FILTRATION</button>
+        <button class="lab-btn" onclick="pressButton('FORAGE')">COLLECT DRY SEEDS</button>
+        <button class="lab-btn" onclick="pressButton('DRINK')">DRINK FROM WATER HOLE</button>
+        <button class="lab-btn" onclick="pressButton('RESPIRE')">OXYGENATE CELLS (RESIDUE H₂O)</button>
+        <button class="lab-btn" onclick="pressButton('DIGEST')">HYDROLYZE CARBOHYDRATES</button>
+        <button class="lab-btn" onclick="pressButton('SLEEP')">DIURNAL BURROW SLEEP</button>
+    </div>
+</div>
+
 <script>
     // EDIT YOUR FINAL COORDINATES HERE
     const finalCoordinates = "N 41° 43.360′ W 88° 23.104";
 
-    // The correct sequence order
     const correctSequence = ["FORAGE", "DIGEST", "RESPIRE", "CONSERVE"];
     let userSequence = [];
 
-    // A pool of fun, thematic failure messages
     const failureMessages = [
         "Wrong! As you were daydreaming, a coyote came and ate you. Try again.",
         "Since you took so long to decide the correct order, a snake had you for lunch! Try again.",
@@ -18,37 +109,30 @@
     function pressButton(btnId) {
         const display = document.getElementById("display");
         
-        // Instant failure if they try to drink water!
         if (btnId === "DRINK") {
             triggerFailure("FATAL ERROR: Kangaroo Rats do not drink standing water! System fried.");
             return;
         }
-        
-        // Filter out buttons that aren't part of the core metabolic process (like SLEEP)
         if (btnId === "SLEEP") {
             triggerFailure("INCORRECT: Sleeping saves moisture, but doesn't synthesize water. Resetting.");
             return;
         }
 
-        // Check if the clicked button matches the next step in the correct sequence
         const expectedButton = correctSequence[userSequence.length];
         
         if (btnId === expectedButton) {
             userSequence.push(btnId);
             display.className = "status-display status-normal";
             
-            // Provide progress updates based on what step they are on
             if (userSequence.length === 1) display.innerText = "SEEDS STORED IN CHEEK POUCHES...";
             if (userSequence.length === 2) display.innerText = "CARBOHYDRATES BROKEN DOWN...";
             if (userSequence.length === 3) display.innerText = "CELLULAR RESPIRATION PRODUCING H₂O...";
             
-            // Check if sequence is complete
             if (userSequence.length === correctSequence.length) {
                 display.className = "status-display status-success";
                 display.innerText = "SUCCESS! METABOLIC WATER STABLE: " + finalCoordinates;
             }
         } else {
-            // Clicked a valid step, but in the wrong order -> Pick a random failure message
             const randomIndex = Math.floor(Math.random() * failureMessages.length);
             triggerFailure(failureMessages[randomIndex]);
         }
@@ -56,8 +140,11 @@
 
     function triggerFailure(message) {
         const display = document.getElementById("display");
-        userSequence = []; // Clear progress
+        userSequence = [];
         display.className = "status-display status-error";
         display.innerText = message;
     }
 </script>
+
+</body>
+</html>
