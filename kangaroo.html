@@ -1,0 +1,63 @@
+<script>
+    // EDIT YOUR FINAL COORDINATES HERE
+    const finalCoordinates = "N 41° 43.360′ W 88° 23.104";
+
+    // The correct sequence order
+    const correctSequence = ["FORAGE", "DIGEST", "RESPIRE", "CONSERVE"];
+    let userSequence = [];
+
+    // A pool of fun, thematic failure messages
+    const failureMessages = [
+        "Wrong! As you were daydreaming, a coyote came and ate you. Try again.",
+        "Since you took so long to decide the correct order, a snake had you for lunch! Try again.",
+        "SEQUENCE BROKEN: A barn owl spotted your hesitation and snatched you from above. Try again.",
+        "INCORRECT: A flash flood rushed down the wash before you could finish. Try again.",
+        "FATAL ERROR: Exposure to the blazing midday sun dehydrated you completely. Try again."
+    ];
+
+    function pressButton(btnId) {
+        const display = document.getElementById("display");
+        
+        // Instant failure if they try to drink water!
+        if (btnId === "DRINK") {
+            triggerFailure("FATAL ERROR: Kangaroo Rats do not drink standing water! System fried.");
+            return;
+        }
+        
+        // Filter out buttons that aren't part of the core metabolic process (like SLEEP)
+        if (btnId === "SLEEP") {
+            triggerFailure("INCORRECT: Sleeping saves moisture, but doesn't synthesize water. Resetting.");
+            return;
+        }
+
+        // Check if the clicked button matches the next step in the correct sequence
+        const expectedButton = correctSequence[userSequence.length];
+        
+        if (btnId === expectedButton) {
+            userSequence.push(btnId);
+            display.className = "status-display status-normal";
+            
+            // Provide progress updates based on what step they are on
+            if (userSequence.length === 1) display.innerText = "SEEDS STORED IN CHEEK POUCHES...";
+            if (userSequence.length === 2) display.innerText = "CARBOHYDRATES BROKEN DOWN...";
+            if (userSequence.length === 3) display.innerText = "CELLULAR RESPIRATION PRODUCING H₂O...";
+            
+            // Check if sequence is complete
+            if (userSequence.length === correctSequence.length) {
+                display.className = "status-display status-success";
+                display.innerText = "SUCCESS! METABOLIC WATER STABLE: " + finalCoordinates;
+            }
+        } else {
+            // Clicked a valid step, but in the wrong order -> Pick a random failure message
+            const randomIndex = Math.floor(Math.random() * failureMessages.length);
+            triggerFailure(failureMessages[randomIndex]);
+        }
+    }
+
+    function triggerFailure(message) {
+        const display = document.getElementById("display");
+        userSequence = []; // Clear progress
+        display.className = "status-display status-error";
+        display.innerText = message;
+    }
+</script>
